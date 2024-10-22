@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent} from 'react';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -11,22 +11,53 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import IconifyIcon from 'components/base/IconifyIcon';
 import paths from 'routes/paths';
+import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
-interface User {
-  [key: string]: string;
-}
 
 const Signin = () => {
-  const [user, setUser] = useState<User>({ email: '', password: '' });
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false); // Add this line
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "username") setUsername(value);
+    if (name === "password") setPassword(value);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(user);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent the default form submission
+    try {
+      const response = await axios.post("http://localhost:80/authenticate/login", {
+        username,
+        password,
+      });
+      // Check if the response contains a status property indicating success
+      if (response.data.status === 200) {
+        // Handle successful login
+        console.log(response.data.message); // Log success message
+
+        // Parse the response and extract the token
+        const { token, refreshToken, expirationTime } = response.data;
+
+        // Store the token and other relevant data securely
+        localStorage.setItem("token", token);
+        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("expirationTime", expirationTime);
+
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+        navigate('/');
+      } else {
+        // Handle unsuccessful login
+        alert(response.data.error || "Unknown error");
+      }
+    } catch (error) {
+      // Handle network errors
+      console.error("Network error:", error);
+    }
   };
 
   return (
@@ -61,16 +92,16 @@ const Signin = () => {
 
       <Divider sx={{ my: 4 }}>or Signin with</Divider>
 
-      <Stack component="form" mt={3} onSubmit={handleSubmit} direction="column" gap={2}>
+      <Stack component="form" mt={3} onSubmit={handleLogin} direction="column" gap={2}>
         <TextField
-          id="email"
-          name="email"
-          type="email"
-          value={user.email}
+          id="username"
+          name="username"
+          type="username"
+          value={username}
           onChange={handleInputChange}
           variant="filled"
-          placeholder="Your Email"
-          autoComplete="email"
+          placeholder="Your Username"
+          autoComplete="username"
           fullWidth
           autoFocus
           required
@@ -86,7 +117,7 @@ const Signin = () => {
           id="password"
           name="password"
           type={showPassword ? 'text' : 'password'}
-          value={user.password}
+          value={password}
           onChange={handleInputChange}
           variant="filled"
           placeholder="Your Password"
@@ -103,8 +134,8 @@ const Signin = () => {
               <InputAdornment
                 position="end"
                 sx={{
-                  opacity: user.password ? 1 : 0,
-                  pointerEvents: user.password ? 'auto' : 'none',
+                  opacity: password ? 1 : 0,
+                  pointerEvents: password ? 'auto' : 'none',
                 }}
               >
                 <IconButton
