@@ -34,20 +34,20 @@ const DrawerItems = () => {
           <Box>
             <Typography
               mt={0.25}
-              variant="h3"
+              variant="h4"
               color="primary.main"
               textTransform="uppercase"
-              letterSpacing={1}
+              letterSpacing={0.5}
               fontFamily={fontFamily.poppins}
             >
-              Venus
+              MaktoumAid
             </Typography>
             <Typography
               mt={-0.35}
               variant="body2"
               color="primary.main"
               textTransform="uppercase"
-              fontWeight={500}
+              fontWeight={300}
               fontFamily={fontFamily.poppins}
             >
               Dashboard

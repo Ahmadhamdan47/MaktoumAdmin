@@ -1,14 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import paths, { rootPaths } from './paths';
 import { Suspense, lazy } from 'react';
-import { Outlet, createBrowserRouter } from 'react-router-dom';
+import { Outlet, createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from 'layouts/main-layout';
 import Splash from 'components/loader/Splash';
 import PageLoader from 'components/loader/PageLoader';
 import AuthLayout from 'layouts/auth-layout';
 
 const App = lazy(() => import('App'));
-const Dashboard = lazy(() => import('pages/dashboard/Dashbaord'));
+const Dashboard = lazy(() => import('pages/dashboard/Dashboard'));
 const Signin = lazy(() => import('pages/authentication/Signin'));
 const Signup = lazy(() => import('pages/authentication/Signup'));
 
@@ -23,19 +23,7 @@ const router = createBrowserRouter(
       children: [
         {
           path: '/',
-          element: (
-            <MainLayout>
-              <Suspense fallback={<PageLoader />}>
-                <Outlet />
-              </Suspense>
-            </MainLayout>
-          ),
-          children: [
-            {
-              index: true,
-              element: <Dashboard />,
-            },
-          ],
+          element: <Navigate to={paths.signin} replace />, // Redirect to SignIn
         },
         {
           path: rootPaths.authRoot,
@@ -55,11 +43,21 @@ const router = createBrowserRouter(
             },
           ],
         },
+        {
+          path: '/dashboard',
+          element: (
+            <MainLayout>
+              <Suspense fallback={<PageLoader />}>
+                <Dashboard />
+              </Suspense>
+            </MainLayout>
+          ),
+        },
       ],
     },
   ],
   {
-    basename: '/venus',
+    basename: '/',
   },
 );
 

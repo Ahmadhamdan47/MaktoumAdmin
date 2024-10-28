@@ -25,6 +25,9 @@ const Topbar = ({ isClosing, mobileOpen, setMobileOpen }: TopbarProps) => {
     }
   };
 
+  // Retrieve the username from local storage (or a global state)
+  const username = localStorage.getItem('username') || 'User'; // Default to 'User' if not found
+
   return (
     <Stack
       py={3.5}
@@ -82,7 +85,8 @@ const Topbar = ({ isClosing, mobileOpen, setMobileOpen }: TopbarProps) => {
             <IconifyIcon icon="ic:outline-notifications-none" />
           </Badge>
         </IconButton>
-        <ProfileMenu />
+        {/* Pass the username prop to ProfileMenu */}
+        <ProfileMenu username={username} />
       </Stack>
     </Stack>
   );

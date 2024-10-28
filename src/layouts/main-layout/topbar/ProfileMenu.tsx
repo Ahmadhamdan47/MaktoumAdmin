@@ -9,50 +9,25 @@ import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import IconifyIcon from 'components/base/IconifyIcon';
-import ProfileImage from 'assets/images/profile.png';
+import { useNavigate } from 'react-router-dom';
 
-interface MenuItems {
-  id: number;
-  title: string;
-  icon: string;
-}
-
-const menuItems: MenuItems[] = [
+// Menu items (only "Logout" remains)
+const menuItems = [
   {
     id: 1,
-    title: 'View Profile',
-    icon: 'ic:outline-account-circle',
-  },
-  {
-    id: 2,
-    title: 'Account Settings',
-    icon: 'ic:outline-manage-accounts',
-  },
-  {
-    id: 3,
-    title: 'Notifications',
-    icon: 'ic:outline-notifications-none',
-  },
-  {
-    id: 4,
-    title: 'Switch Account',
-    icon: 'ic:outline-switch-account',
-  },
-  {
-    id: 5,
-    title: 'Help Center',
-    icon: 'ic:outline-contact-support',
-  },
-  {
-    id: 6,
     title: 'Logout',
     icon: 'ic:baseline-logout',
   },
 ];
 
-const ProfileMenu = () => {
+interface ProfileMenuProps {
+  username: string;
+}
+
+const ProfileMenu = ({ username }: ProfileMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,6 +35,14 @@ const ProfileMenu = () => {
 
   const handleProfileMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    // Clear stored tokens and navigate to the login page
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('expirationTime');
+    navigate('/auth/signin');
   };
 
   return (
@@ -73,13 +56,15 @@ const ProfileMenu = () => {
         disableRipple
       >
         <Avatar
-          src={ProfileImage}
           sx={{
             height: 44,
             width: 44,
             bgcolor: 'primary.main',
+            fontSize: 20,
           }}
-        />
+        >
+          {username.charAt(0).toUpperCase()} {/* Display the first letter of the username */}
+        </Avatar>
       </ButtonBase>
 
       <Menu
@@ -100,14 +85,14 @@ const ProfileMenu = () => {
       >
         <Box p={1}>
           <MenuItem onClick={handleProfileMenuClose} sx={{ '&:hover': { bgcolor: 'info.dark' } }}>
-            <Avatar src={ProfileImage} sx={{ mr: 1, height: 42, width: 42 }} />
+            <Avatar sx={{ mr: 1, height: 42, width: 42, bgcolor: 'primary.main', fontSize: 18 }}>
+              {username.charAt(0).toUpperCase()}
+            </Avatar>
             <Stack direction="column">
               <Typography variant="body2" color="text.primary" fontWeight={600}>
-                Alex Manda
+                {username}
               </Typography>
-              <Typography variant="caption" color="text.secondary" fontWeight={400}>
-                alex@example.com
-              </Typography>
+              {/* Optionally, you can display the user's email or other info here */}
             </Stack>
           </MenuItem>
         </Box>
@@ -117,7 +102,11 @@ const ProfileMenu = () => {
         <Box p={1}>
           {menuItems.map((item) => {
             return (
-              <MenuItem key={item.id} onClick={handleProfileMenuClose} sx={{ py: 1 }}>
+              <MenuItem
+                key={item.id}
+                onClick={item.title === 'Logout' ? handleLogout : handleProfileMenuClose}
+                sx={{ py: 1 }}
+              >
                 <ListItemIcon sx={{ mr: 1, color: 'text.secondary', fontSize: 'h5.fontSize' }}>
                   <IconifyIcon icon={item.icon} />
                 </ListItemIcon>
