@@ -12,8 +12,11 @@ import Image from 'components/base/Image';
 import IconifyIcon from 'components/base/IconifyIcon';
 import LogoImg from 'assets/images/logo.png';
 import sitemap from 'routes/sitemap';
+import { useLocation } from 'react-router-dom';
 
 const DrawerItems = () => {
+  const location = useLocation();
+
   return (
     <>
       <Stack
@@ -61,7 +64,11 @@ const DrawerItems = () => {
           route.items ? (
             <CollapseListItem key={route.id} {...route} />
           ) : (
-            <ListItem key={route.id} {...route} />
+            <ListItem
+              key={route.id}
+              {...route}
+              active={location.pathname === route.path}
+            />
           ),
         )}
       </List>

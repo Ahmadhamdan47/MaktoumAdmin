@@ -14,6 +14,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableFooter,
+  TablePagination,
   Button,
   Dialog,
   DialogActions,
@@ -48,6 +50,12 @@ interface Organization {
   modifiedAt: string;
 }
 
+// Define the OrganizationAddRequest interface
+interface OrganizationAddRequest {
+  organization: Organization;
+  situationId: number;
+}
+
 interface CrudTableProps {
   title: string;
   fetchUrl: string;
@@ -78,6 +86,8 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
     createdAt: '',
     modifiedAt: '',
   });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Get the token from local storage
   const token = localStorage.getItem('token');
@@ -91,7 +101,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
           axios.get<Organization[]>(fetchUrl, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get<Country[]>('https://maktoum.oummal.org/country/all-countries', {
+          axios.get<Country[]>('https://https://maktoum.oummal.org/country/all-countries', {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -115,7 +125,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleCountryChange = ( value: Country | null) => {
+  const handleCountryChange = (value: Country | null) => {
     setFormData({ ...formData, country: value });
   };
 
@@ -163,14 +173,14 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
         return;
       }
 
-      const payload = {
-        ...formData,
-        countryId: formData.country ? formData.country.id : null,
+      const payload: OrganizationAddRequest = {
+        organization: formData,
+        situationId: 0, // Set the appropriate situationId if needed
       };
 
       if (editData) {
         // Edit existing organization
-        await axios.put(`${updateUrl}/${editData.id}`, payload, {
+        await axios.put(`${updateUrl}/${editData.id}`, payload.organization, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setData(prevData => prevData.map(item => (item.id === editData.id ? { ...item, ...formData } : item)));
@@ -194,6 +204,15 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
       typeof value === 'string' && value.toLowerCase().includes(searchText.toLowerCase())
     )
   );
+
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <Paper sx={{ px: 0, height: { xs: 442, sm: 396 } }}>
@@ -254,7 +273,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredData.map((item) => (
+                {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
                     <TableCell>{item.name}</TableCell>
@@ -274,6 +293,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
                         variant="outlined"
                         color="primary"
                         size="small"
+                        sx={{ color: 'primary.main', borderColor: 'primary.main' }}
                         onClick={() => handleOpenModal(item)}
                       >
                         Edit
@@ -282,14 +302,36 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
                         variant="outlined"
                         color="error"
                         size="small"
+                        sx={{ color: 'error.main', borderColor: 'error.main' }}
                         onClick={() => handleDelete(item.id!)}
                       >
                         Delete
                       </Button>
                     </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={filteredData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={(_, newPage) => handleChangePage(newPage)}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    sx={{
+                      '.MuiTablePagination-actions': {
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      marginRight:20,
+                      },
+                    }}
+                    />
                   </TableRow>
-                ))}
-              </TableBody>
+              
+              </TableFooter>
             </Table>
           </TableContainer>
         )}
@@ -325,7 +367,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
           <Button onClick={handleCloseModal} color="secondary">
             Cancel
           </Button>
-          <Button onClick={handleSave} color="primary" disabled={!isFormValid}>
+          <Button onClick={handleSave} color="primary" disabled={!isFormValid} sx={{ color: !isFormValid ? 'grey.500' : 'primary.main' }}>
             Save
           </Button>
         </DialogActions>

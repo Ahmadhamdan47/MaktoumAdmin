@@ -4,14 +4,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import IconifyIcon from 'components/base/IconifyIcon';
 
 interface Language {
   id: number;
   code: string;
   lang: string;
-  flag: string;
 }
 
 const languages: Language[] = [
@@ -19,31 +16,26 @@ const languages: Language[] = [
     id: 1,
     code: 'eng',
     lang: 'English',
-    flag: 'twemoji:flag-united-kingdom',
   },
   {
     id: 2,
     code: 'ban',
     lang: 'বাংলা',
-    flag: 'twemoji:flag-bangladesh',
   },
   {
     id: 3,
     code: 'zh',
     lang: '中文',
-    flag: 'twemoji:flag-china',
   },
   {
     id: 4,
     code: 'tr',
     lang: 'Türkçe',
-    flag: 'twemoji:flag-turkey',
   },
   {
     id: 5,
     code: 'nld',
     lang: 'Dutch',
-    flag: 'twemoji:flag-netherlands',
   },
 ];
 
@@ -68,7 +60,7 @@ const LanguageSelect = () => {
   return (
     <>
       <IconButton onClick={handleFlagButtonClick} size="large">
-        <IconifyIcon icon={language.flag} />
+        <Typography>{language.lang}</Typography>
       </IconButton>
 
       <Menu
@@ -93,9 +85,6 @@ const LanguageSelect = () => {
               sx={{ bgcolor: langItem.id === language.id ? 'info.dark' : null }}
               onClick={() => handleLanguageItemClick(langItem)}
             >
-              <ListItemIcon sx={{ mr: 2, fontSize: 'h3.fontSize' }}>
-                <IconifyIcon icon={langItem.flag} />
-              </ListItemIcon>
               <ListItemText>
                 <Typography>{langItem.lang}</Typography>
               </ListItemText>

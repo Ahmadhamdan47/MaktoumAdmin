@@ -7,6 +7,8 @@ export const rootPaths = {
 
 export default {
   dashboard: `/dashboard`,
+  countries: `/countries`,
+  situations: `/situations`,
   activity: `/${rootPaths.pageRoot}/activity`,
   library: `/${rootPaths.pageRoot}/library`,
   schedules: `/${rootPaths.pageRoot}/schedules`,

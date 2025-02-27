@@ -22,21 +22,21 @@ export interface MenuItem {
 const sitemap: MenuItem[] = [
   {
     id: 'dashboard',
-    subheader: 'Dashboard',
-    path: '/',
+    subheader: 'Organizations',
+    path: paths.dashboard,
     icon: 'ri:dashboard-fill',
     active: true,
   },
   {
     id: 'activity',
-    subheader: 'Activity',
-    path: '#!',
+    subheader: 'Countries',
+    path: paths.countries,
     icon: 'ic:baseline-show-chart',
   },
   {
     id: 'library',
-    subheader: 'Library',
-    path: '#!',
+    subheader: 'Situations',
+    path: paths.situations,
     icon: 'material-symbols:local-library-outline',
   },
   {
@@ -60,19 +60,19 @@ const sitemap: MenuItem[] = [
   {
     id: 'schedules',
     subheader: 'Schedules',
-    path: '#!',
+    path: paths.schedules,
     icon: 'ic:outline-calendar-today',
   },
   {
     id: 'payouts',
     subheader: 'Payouts',
-    path: '#!',
+    path: paths.payouts,
     icon: 'material-symbols:account-balance-wallet-outline',
   },
   {
     id: 'settings',
     subheader: 'Settings',
-    path: '#!',
+    path: paths.settings,
     icon: 'ic:outline-settings',
   },
 ];
