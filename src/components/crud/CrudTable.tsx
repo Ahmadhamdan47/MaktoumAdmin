@@ -211,11 +211,13 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
       console.error('Failed to save data:', error);
     }
   };
-const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files) {
-    setImageFile(e.target.files[0]);
-  }
-};
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
   const isFormValid = formData.name && formData.email && formData.phoneNumber && formData.country;
 
   const filteredData = data.filter((item) =>
@@ -275,7 +277,6 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>ID</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Phone</TableCell>
@@ -286,6 +287,7 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
                   <TableCell>Contact Person</TableCell>
                   <TableCell>Social Media</TableCell>
                   <TableCell>Projects</TableCell>
+                  <TableCell>Image</TableCell>
                   <TableCell>Created At</TableCell>
                   <TableCell>Modified At</TableCell>
                   <TableCell>Actions</TableCell>
@@ -294,7 +296,6 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
               <TableBody>
                 {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell>{item.id}</TableCell>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.email}</TableCell>
                     <TableCell>{item.phoneNumber}</TableCell>
@@ -305,6 +306,18 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
                     <TableCell>{item.contactPerson}</TableCell>
                     <TableCell>{item.socialMedia}</TableCell>
                     <TableCell>{item.projects}</TableCell>
+                    <TableCell>
+                      {item.imageUrl ? (
+                        <>
+                          <img src={item.imageUrl} alt={item.name} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />
+                          <a href={item.imageUrl} download>
+                            Download
+                          </a>
+                        </>
+                      ) : (
+                        'No Image'
+                      )}
+                    </TableCell>
                     <TableCell>{item.createdAt}</TableCell>
                     <TableCell>{item.modifiedAt}</TableCell>
                     <TableCell>
@@ -327,12 +340,12 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
                         Delete
                       </Button>
                     </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                  <TableFooter>
-                  <TableRow>
-                    <TablePagination
+                  </TableRow>
+                ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={filteredData.length}
@@ -342,14 +355,13 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                     sx={{
                       '.MuiTablePagination-actions': {
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      marginRight:20,
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        marginRight: 20,
                       },
                     }}
-                    />
-                  </TableRow>
-              
+                  />
+                </TableRow>
               </TableFooter>
             </Table>
           </TableContainer>
@@ -381,7 +393,22 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
             renderInput={(params) => <TextField {...params} label="Country" margin="dense" />}
             isOptionEqualToValue={(option, value) => option.id === value.id}
           />
-        <input type="file" onChange={handleFileChange} />
+
+          {/* Upload Button */}
+          <Box mt={2}>
+            <Button variant="contained" component="label">
+              Upload Image
+              <input type="file" hidden onChange={handleFileChange} />
+            </Button>
+          </Box>
+
+          {/* Image Preview */}
+          {imageFile && (
+            <Box mt={2}>
+              <Typography variant="body2">Image Preview:</Typography>
+              <img src={URL.createObjectURL(imageFile)} alt="Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} />
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="secondary">
