@@ -29,7 +29,7 @@
     const handleLogin = async (e: React.FormEvent) => {
       e.preventDefault(); // Prevent the default form submission
       try {
-        const response = await axios.post("https://https://maktoum.oummal.org/authenticate/login", {
+        const response = await axios.post("https://maktoum.oummal.org/authenticate/login", {
           username,
           password,
         });

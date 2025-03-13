@@ -101,7 +101,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
           axios.get<Organization[]>(fetchUrl, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get<Country[]>('https://https://maktoum.oummal.org/country/all-countries', {
+          axios.get<Country[]>('https://maktoum.oummal.org/country/all-countries', {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
