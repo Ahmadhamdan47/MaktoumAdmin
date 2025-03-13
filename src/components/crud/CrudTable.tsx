@@ -71,6 +71,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
   const [loading, setLoading] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [editData, setEditData] = useState<Organization | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<Organization>({
     name: '',
     email: '',
@@ -172,31 +173,49 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
         alert('Please fill out all required fields.');
         return;
       }
-
+  
       const payload: OrganizationAddRequest = {
         organization: formData,
         situationId: 0, // Set the appropriate situationId if needed
       };
-
+  
+      let response;
       if (editData) {
         // Edit existing organization
-        await axios.put(`${updateUrl}/${editData.id}`, payload.organization, {
+        response = await axios.put(`${updateUrl}/${editData.id}`, payload.organization, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setData(prevData => prevData.map(item => (item.id === editData.id ? { ...item, ...formData } : item)));
       } else {
         // Add new organization
-        const response = await axios.post(createUrl, payload, {
+        response = await axios.post(createUrl, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setData([...data, response.data]);
       }
+  
+      // Handle image upload if a file is selected
+      if (imageFile && response.data.id) {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        await axios.post(`https://maktoum.oummal.org/admin/image/upload/${response.data.id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }
+  
       handleCloseModal();
     } catch (error) {
       console.error('Failed to save data:', error);
     }
   };
-
+const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files) {
+    setImageFile(e.target.files[0]);
+  }
+};
   const isFormValid = formData.name && formData.email && formData.phoneNumber && formData.country;
 
   const filteredData = data.filter((item) =>
@@ -362,6 +381,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
             renderInput={(params) => <TextField {...params} label="Country" margin="dense" />}
             isOptionEqualToValue={(option, value) => option.id === value.id}
           />
+        <input type="file" onChange={handleFileChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="secondary">
