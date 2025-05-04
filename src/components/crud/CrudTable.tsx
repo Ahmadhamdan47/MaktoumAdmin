@@ -464,7 +464,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
             pb: 2,
           }}
         >
-          {[
+    {[
             "name",
             "email",
             "phoneNumber",
@@ -483,6 +483,9 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
               value={formData[field as keyof Organization]}
               onChange={handleFormChange}
               fullWidth
+              // Turn selected fields into multiline textboxes
+              multiline={["notes", "description", "projects"].includes(field)}
+              minRows={["notes", "description", "projects"].includes(field) ? 3 : undefined}
             />
           ))}
 
