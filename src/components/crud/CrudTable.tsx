@@ -199,7 +199,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
   const handleSave = async () => {
     try {
       // Validate required fields
-      if (!formData.name || !formData.email || !formData.phoneNumber || !formData.country) {
+      if (!formData.name || !formData.country) {
         alert("Please fill out all required fields.")
         return
       }
@@ -257,7 +257,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
     }
   }
 
-  const isFormValid = formData.name && formData.email && formData.phoneNumber && formData.country
+  const isFormValid = formData.name && formData.country
 
   const filteredData = data.filter((item) =>
     Object.values(item).some(
@@ -347,11 +347,11 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ minWidth: 150 }}>Name</TableCell>
-                  <TableCell sx={{ minWidth: 200 }}>Email</TableCell>
-                  <TableCell sx={{ minWidth: 150 }}>Phone</TableCell>
+                  <TableCell sx={{ minWidth: 200 }}>Contact Person</TableCell>
+                  <TableCell sx={{ minWidth: 150 }}>Contact Information</TableCell>
                   <TableCell sx={{ minWidth: 150 }}>Country</TableCell>
-                  <TableCell sx={{ minWidth: 200 }}>Notes</TableCell>
-                  <TableCell sx={{ minWidth: 250 }}>Description</TableCell>
+                  <TableCell sx={{ minWidth: 200 }}>Brief about the organization</TableCell>
+                  <TableCell sx={{ minWidth: 250 }}>Ongoing projects / support / services</TableCell>
                   <TableCell sx={{ minWidth: 200 }}>Website</TableCell>
                   <TableCell sx={{ minWidth: 150 }}>Contact Person</TableCell>
                   <TableCell sx={{ minWidth: 150 }}>Social Media</TableCell>
@@ -366,7 +366,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
                 {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.contactPerson}</TableCell>
                     <TableCell>{item.phoneNumber}</TableCell>
                     <TableCell>{item.country ? item.country.name : "N/A"}</TableCell>
                     <TableCell>{item.notes}</TableCell>
@@ -464,28 +464,145 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
             pb: 2,
           }}
         >
-          {[
-            "name",
-            "email",
-            "phoneNumber",
-            "notes",
-            "description",
-            "website",
-            "contactPerson",
-            "socialMedia",
-            "projects",
-          ].map((field) => (
-            <TextField
-              key={field}
-              margin="dense"
-              label={field.replace(/([A-Z])/g, " $1")}
-              name={field}
-              value={formData[field as keyof Organization]}
-              onChange={handleFormChange}
-              fullWidth
-              multiline
-            />
-          ))}
+          <TextField
+            margin="dense"
+            label="Name"
+            name="name"
+            value={formData.name}
+            onChange={handleFormChange}
+            fullWidth
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Contact person"
+            name="contactPerson"
+            value={formData.contactPerson}
+            onChange={handleFormChange}
+            fullWidth
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Contact information"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleFormChange}
+            fullWidth
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Brief about the organization"
+            name="notes"
+            value={formData.notes}
+            onChange={handleFormChange}
+            fullWidth
+            multiline
+            rows={2}
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Ongoing projects / support / services"
+            name="description"
+            value={formData.description}
+            onChange={handleFormChange}
+            fullWidth
+            multiline
+            rows={2}
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Website"
+            name="website"
+            value={formData.website}
+            onChange={handleFormChange}
+            fullWidth
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleFormChange}
+            fullWidth
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Social media"
+            name="socialMedia"
+            value={formData.socialMedia}
+            onChange={handleFormChange}
+            fullWidth
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Projects"
+            name="projects"
+            value={formData.projects}
+            onChange={handleFormChange}
+            fullWidth
+            variant="outlined"
+            sx={{
+              '& .MuiInputLabel-root': {
+                backgroundColor: 'background.paper',
+                px: 0.5,
+              },
+            }}
+          />
 
           {/* Country Dropdown */}
           <Autocomplete
@@ -493,7 +610,20 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
             getOptionLabel={(option) => option.name}
             value={formData.country}
             onChange={(_, value) => handleCountryChange(value)}
-            renderInput={(params) => <TextField {...params} label="Country" margin="dense" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Country"
+                margin="dense"
+                variant="outlined"
+                sx={{
+                  '& .MuiInputLabel-root': {
+                    backgroundColor: 'background.paper',
+                    px: 0.5,
+                  },
+                }}
+              />
+            )}
             isOptionEqualToValue={(option, value) => option.id === value.id}
           />
 
