@@ -54,7 +54,7 @@ interface Organization {
 // Define the OrganizationAddRequest interface
 interface OrganizationAddRequest {
   organization: Organization
-  situationId: number
+  situationId: number | null
 }
 
 interface CrudTableProps {
@@ -206,7 +206,7 @@ const CrudTable = ({ title, fetchUrl, createUrl, updateUrl, deleteUrl }: CrudTab
 
       const payload: OrganizationAddRequest = {
         organization: formData,
-        situationId: 0, // Set the appropriate situationId if needed
+        situationId: null, // Set to null if no situation is selected
       }
 
       let response
